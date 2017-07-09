@@ -25,9 +25,9 @@
                     <div>
                         <input id="show-listings" type="button" value="Show Listings">
                         <input id="hide-listings" type="button" value="Hide Listings">
-                        <input id="filterLocations" type="text" placeholder="Pick a location..." data-bind"">
-                        <button><span class="glyphicon glyphicon-filter"></span>Filter</button>
-                        <ul data-bind="foreach: mapList">
+                        <!--drop down of location categories-->
+                        <select data-bind="options: optionValues, value: selectedOptionValue"></select>
+                        <ul data-bind="foreach: filteredLocations">
                             <li data-bind="text: title, click: $parent.setLocation"></li>
                         </ul>
                     </div>
