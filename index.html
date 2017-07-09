@@ -1,13 +1,37 @@
 <!-- "starter code" from 07_Markers/Infowindows in Udacity and Google's Maps API Course, Lesson 1 -->
 <html>
     <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>KClarke Neighborhood Map</title>
         <style type="text/css">
             html, body { height: 100%; margin: 0; padding: 0; }
             #map { height: 100%; }
         </style>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     </head>
     <body>
-        <div id="map"></div>
+        <div class="container">
+            <div>
+                <h1>One of the many places on my travel list: Rome, Italy</h1>
+                <h2>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h2>
+            </div>
+            <div class="row">
+                <nav class="col-sm-4" id="locationList">
+                    <a href="#" title="Hide Navigation">
+                        <span class="glyphicon glyphicon-menu-hamburger"></span>
+                    </a>
+                    <h2>Pick a location in Rome</h2>
+                    <div>
+                        <input id="show-listings" type="button" value="Show Listings">
+                        <input id="hide-listings" type="button" value="Hide Listings">
+                        <input id="filterLocations" type="text" placeholder="Pick a location..." data-bind"">
+                        <button><span class="glyphicon glyphicon-filter"></span>Filter</button>
+                    </div>
+                </nav>
+                <div id="map" class="col-sm-8"></div>
+            </div>
+        </div>
         <script type="text/javascript">
             // Create a map variable
             var map;
@@ -22,27 +46,42 @@
                     zoom: 13
                 });
                 
-                // Create a single latLng literal object.
-                var singleLatLng = {lat: 40.74135, lng: -73.99802};
+                var locations = [
+                    {title: 'Pantheon', location: {lat: 41.898611, lng: 12.476873}},
+                    {title: 'Santa Maria del Popolo', location: {lat: 41.911491, lng: 12.476656}},
+                    {title: 'St. Peter’s Square', location: {lat: 41.902218, lng: 12.456796}},
+                    {title: 'Santa Maria della Vittoria', location: {lat: 41.904701, lng: 12.494369}},
+                    {title: 'Piazza Navona', location: {lat: 41.899163, lng: 12.473074}},
+                    {title: 'Sant’Agnese in Agone', location: {lat: 41.898844, lng: 12.472552}},
+                    {title:'Castel Sant’Angelo', location: {lat:41.903063, lng:12.466276}},
+                    {title:'St. Peter’s Basilica', location: {lat:41.902167, lng:12.453937}},
+                    {title:'Sistine Chapel', location: {lat:41.902947, lng:12.454484}}
+                ];
                 
-                // TODO: Create a single marker appearing on initialize -
-                // Create it with the position of the singleLatLng,
-                // on the map, and give it your own title!
-                var marker = new google.maps.Marker({
-                    position: singleLatLng,
-                    map: map,
-                    title: 'First Marker!'
-                });
+                var infowindow = new google.maps.InfoWindow();
                 
-                // TODO: create a single infowindow, with your own content.
-                // It must appear on the marker
-                var largeInfowindow = new google.maps.InfoWindow();
+                // The following group uses the location array to create an array of markers on initialize.
+                for (var i = 0; i < locations.length; i++) {
+                    // Get the position from the location array.
+                    var position = locations[i].location;
+                    var title = locations[i].title;
+                    // Create a marker per location, and put into markers array.
+                    var marker = new google.maps.Marker({
+                        position: position,
+                        title: title,
+                        animation: google.maps.Animation.DROP,
+                        id: i
+                    });
+                    // Push the marker to our array of markers.
+                    markers.push(marker);
+                    // Create an onclick event to open the large infowindow at each marker.
+                    marker.addListener('click', function() {
+                        populateInfoWindow(this, infowindow);
+                    });
+                }
                 
-                // TODO: create an EVENT LISTENER so that the infowindow opens when
-                // the marker is clicked!
-                marker.addListener('click', function() {
-                    populateInfoWindow(this, largeInfowindow);
-                });
+                document.getElementById('show-listings').addEventListener('click', showListings);
+                document.getElementById('hide-listings').addEventListener('click', hideListings);
             }
 
             function populateInfoWindow(marker, infowindow) {
@@ -57,9 +96,30 @@
                     });
                 }
             }
+            // This function will loop through the markers array and display them all.
+            function showListings() {
+                var bounds = new google.maps.LatLngBounds();
+                // Extend the boundaries of the map for each marker and display the marker
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(map);
+                    bounds.extend(markers[i].position);
+                }
+                map.fitBounds(bounds);
+            }
+
+            // This function will loop through the listings and hide them all.
+            function hideListings() {
+                for (var i = 0; i < markers.length; i++) {
+                    markers[i].setMap(null);
+                }
+            }
         </script>
+        <!-- Load jQuery Library -->
+        <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+        <!-- Load Bootstrap Framework -->
+        <script type="text/javascript" src="js/bootstrap.min.js"></script>
         <!-- Load Knockout Framework -->
-        <script type="text/javascript" src="bower_components/knockout/build/knockout-raw.js"></script>
+        <script type="text/javascript" src="js/knockout.js"></script>
         <!--Load Google API asynchronously.-->
         <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBDGH5hL45yTZWsj7ZgpDHy_D4k8JP2ynE&v=3&callback=initMap">
         </script>
