@@ -10,6 +10,12 @@ var locations = [
         {title: 'Sistine Chapel', location: {lat:41.902947, lng:12.454484}, category: 'Church'}
 ];
 
+// Create a map variable
+var map;
+
+// Create a new blank array for all the listing markers.
+var markers = [];
+
 var Mapping = function(data){
     this.title = data.title;
     this.location = data.location; 
@@ -52,6 +58,42 @@ var ViewModel = function(){
     this.setLocation = function(clickedLocation) {
         self.currentLocation(clickedLocation);
     };
+    
+    //Source: "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
+    map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 41.902701, lng: 12.496235},
+        zoom: 13
+    });
+    
+    var infowindow = new google.maps.InfoWindow();
+    var bounds = new google.maps.LatLngBounds();
+    
+     // The following group uses the location array to create an array of markers on initialize.
+    for (var i = 0; i < this.mapList().length; i++) {
+        // Get the position from the location array.
+        var position = this.mapList()[i].location;
+        var title = this.mapList()[i].title;
+        // Create a marker per location, and put into markers array.
+        var marker = new google.maps.Marker({
+            position: position,
+            title: title,
+            animation: google.maps.Animation.DROP,
+            id: i
+        });
+        // Push the marker to our array of markers.
+        markers.push(marker);
+        // Create an onclick event to open the large infowindow at each marker.
+        marker.addListener('click', function() {
+            populateInfoWindow(this, infowindow);
+        });
+    }
+    
+    // Extend the boundaries of the map for each marker and display the marker
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(map);
+        bounds.extend(markers[i].position);
+    }
+    map.fitBounds(bounds);
 };
 
 // "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
@@ -69,6 +111,6 @@ var populateInfoWindow = function(marker, infowindow){
     }
 };
 
-var initMap = function(){
+var initMap = function(){        
     ko.applyBindings(new ViewModel());
 };
