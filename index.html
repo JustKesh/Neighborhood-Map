@@ -32,15 +32,6 @@
                 <div id="map" class="col-sm-8"></div>
             </div>
         </div>
-        <script type="text/javascript">
-
-            // This function will loop through the listings and hide them all.
-            function hideListings() {
-                for (var i = 0; i < markers.length; i++) {
-                    markers[i].setMap(null);
-                }
-            }
-        </script>
         <!-- Load jQuery Library -->
         <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <!-- Load Bootstrap Framework -->
@@ -52,6 +43,5 @@
         <!--Load Google API asynchronously.-->
         <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBDGH5hL45yTZWsj7ZgpDHy_D4k8JP2ynE&v=3&callback=initMap">
         </script>
-
     </body>
 </html>

@@ -43,13 +43,20 @@ var ViewModel = function(){
     this.filteredLocations = ko.computed(function(){
         var category = self.selectedOptionValue();
         if (category === "All"){
+            hideMarkers();
+            displayMarker(self.mapList());
             return self.mapList();
         }
         else {
             var tempList = self.mapList.slice();
-            return tempList.filter(function(location){
+            hideMarkers();
+            //create a list of just the locations with the selected category
+            var filterList = tempList.filter(function(location){
                 return location.category === category;
             });
+            //only display the filtered list
+            displayMarker(filterList);
+            return filterList;
         }
     });
     
@@ -57,8 +64,18 @@ var ViewModel = function(){
     
     this.setLocation = function(clickedLocation) {
         self.currentLocation(clickedLocation);
+        this.singleLoc = ko.observableArray([clickedLocation]);
+        hideMarkers();
+        //this doesn't work
+        displayMarker(this.singleLoc());
+        
+        //how to change the appearance of the marker 
     };
     
+    displayMarker(this.mapList());
+};
+
+var displayMarker = function(locationList){
     //Source: "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 41.902701, lng: 12.496235},
@@ -68,11 +85,11 @@ var ViewModel = function(){
     var infowindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
     
-     // The following group uses the location array to create an array of markers on initialize.
-    for (var i = 0; i < this.mapList().length; i++) {
+    // The following group uses the location array to create an array of markers on initialize.
+    for (var i = 0; i < locationList.length; i++) {
         // Get the position from the location array.
-        var position = this.mapList()[i].location;
-        var title = this.mapList()[i].title;
+        var position = locationList[i].location;
+        var title = locationList[i].title;
         // Create a marker per location, and put into markers array.
         var marker = new google.maps.Marker({
             position: position,
@@ -87,13 +104,29 @@ var ViewModel = function(){
             populateInfoWindow(this, infowindow);
         });
     }
-    
+
     // Extend the boundaries of the map for each marker and display the marker
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(map);
         bounds.extend(markers[i].position);
     }
     map.fitBounds(bounds);
+    //set zoom for single markers, so you are not on the rooftop of buildings
+    var listener = google.maps.event.addListener(map, "idle", function() { 
+        if(markers.length < 3){
+            map.setZoom(18); 
+        }
+        google.maps.event.removeListener(listener); 
+    });
+};
+
+var hideMarkers = function(){
+    //hide all the markers on the map
+    for (var i = 0; i < markers.length; i++) {
+        markers[i].setMap(null);
+    }
+    //empty markers
+    markers = [];
 };
 
 // "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
