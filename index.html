@@ -3,35 +3,33 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>KClarke Neighborhood Map</title>
-        <style type="text/css">
-            html, body { height: 100%; margin: 0; padding: 0; }
-            #map { height: 100%; }
-        </style>
         <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
     </head>
     <body>
-        <div class="container">
+<!--            <div>
+            <h1>One of the many places on my travel list: Rome, Italy</h1>
+            <h2>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h2>
+        </div>-->
+        <nav id="drawer" class="dark_blue" id="locationList">
+            <h2 class="navbar-brand">Pick a location in Rome</h2>
             <div>
-                <h1>One of the many places on my travel list: Rome, Italy</h1>
-                <h2>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h2>
+                <!--drop down of location categories-->
+                <select class="navbar-nav" data-bind="options: optionValues, value: selectedOptionValue"></select>
+                <ul class="nav navbar-nav" data-bind="foreach: filteredLocations">
+                    <!--css:$parent.getClass(title)-->
+                    <li data-bind="text: title, click: $parent.setLocation"></li>
+                </ul>
             </div>
-            <div class="row">
-                <nav class="col-sm-4" id="locationList">
-                    <a href="#" title="Hide Navigation">
-                        <span class="glyphicon glyphicon-menu-hamburger"></span>
-                    </a>
-                    <h2>Pick a location in Rome</h2>
-                    <div>
-                        <!--drop down of location categories-->
-                        <select data-bind="options: optionValues, value: selectedOptionValue"></select>
-                        <ul data-bind="foreach: filteredLocations">
-                            <li data-bind="text: title, click: $parent.setLocation"></li>
-                        </ul>
-                    </div>
-                </nav>
-                <div id="map" class="col-sm-8"></div>
-            </div>
-        </div>
+        </nav>
+        <main class="light_blue">
+            <h3>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h3>
+            <button id="menu" type="button" >
+                <span class="glyphicon glyphicon-menu-hamburger"></span>
+            </button>
+            <p>Click off the menu screen to close the window.</p>
+            <div id="map"></div>
+        </main>
         <!-- Load jQuery Library -->
         <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <!-- Load Bootstrap Framework -->

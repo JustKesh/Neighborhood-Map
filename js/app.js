@@ -62,15 +62,25 @@ var ViewModel = function(){
     
     this.currentLocation = ko.observable( this.mapList()[0] );
     
+//    self.getClass = function(title) {
+//        return this.selected() == title ? "selected" : "";
+//    }
+    
     this.setLocation = function(clickedLocation) {
         self.currentLocation(clickedLocation);
         this.singleLoc = ko.observableArray([clickedLocation]);
+        //this.selected = ko.observable([clickedLocation].title);
         hideMarkers();
         //this doesn't work
         displayMarker(this.singleLoc());
         
         //how to change the appearance of the marker 
+        
+        //how to add api info
     };
+    
+    //set css class to selected when link is clicked
+    //this.selectedLocation = ko.observable('selected');
     
     displayMarker(this.mapList());
 };
@@ -79,7 +89,7 @@ var displayMarker = function(locationList){
     //Source: "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
     map = new google.maps.Map(document.getElementById('map'), {
         center: {lat: 41.902701, lng: 12.496235},
-        zoom: 13
+        zoom: 15
     });
     
     var infowindow = new google.maps.InfoWindow();
@@ -147,3 +157,15 @@ var populateInfoWindow = function(marker, infowindow){
 var initMap = function(){        
     ko.applyBindings(new ViewModel());
 };
+
+var menu = document.querySelector('#menu');
+var main = document.querySelector('main');
+var drawer = document.querySelector('#drawer');
+
+menu.addEventListener('click', function(e) {
+    drawer.classList.toggle('open');
+    e.stopPropagation();
+});
+main.addEventListener('click', function() {
+    drawer.classList.remove('open');
+});

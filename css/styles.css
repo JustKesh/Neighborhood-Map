@@ -1,0 +1,90 @@
+@import url(https://fonts.googleapis.com/css?family=Roboto);
+
+html, body, main { 
+    height: 100%; 
+    width: 100%;
+    margin: 0; 
+    padding: 0; 
+}
+
+nav, main {
+    padding: 1em;
+    box-sizing: border-box;
+}
+
+#map { 
+    height: 100%; 
+}
+
+.navbar-nav {
+    float: none;
+}
+.navbar-nav>li {
+    float: none;
+    padding: 8px 8px 8px 32px;
+}
+
+li:hover{
+    background-color: #099DD9;
+} 
+
+.selected{
+    background-color: #099DD9;
+}
+/* Source: Lesson 7: Common Responsive Patterns - 9. Pattern Off Canvas */
+nav {
+    width: 300px;
+    height: 100%;
+    position: absolute;
+    /* This trasform moves the drawer off canvas. */
+    -webkit-transform: translate(-300px, 0);
+    transform: translate(-300px, 0);
+    /* Optionally, we animate the drawer. */
+    transition: transform 0.3s ease;
+    z-index: 1;
+}
+nav.open {
+    -webkit-transform: translate(0, 0);
+    transform: translate(0, 0);
+}
+
+select {
+    color: black;
+}
+
+ /* If there is enough space (> 600px), we keep the drawer open all the time. */
+@media (min-width: 800px) {
+    /* We open the drawer. */
+    nav {
+        position: relative;
+        -webkit-transform: translate(0, 0);
+        transform: translate(0, 0);
+    }
+
+    /* We use Flexbox on the parent. */
+    body {
+        display: -webkit-flex;
+        display: flex;
+        -webkit-flex-flow: row nowrap;
+        flex-flow: row nowrap;
+    }
+
+    main {
+        width: auto;
+        /* Flex-grow streches the main content to fill all available space. */
+        flex-grow: 1;
+    }
+    
+    main p, nav p {
+        display: none;
+    }
+}
+
+.dark_blue {
+    background-color: #2A457A;
+    color: #efefef;
+}
+
+.light_blue {
+    background-color: #099DD9;
+}
