@@ -8,6 +8,8 @@ function loadData() {
         
         var phone = data.response.venue[0].contact.formattedPhone;
         var address = data.response.venue[0].location.formattedAddress;
+        
+        this.marker.content = "<p>Phone: " + phone + "</p><p>Address: " + address;
     }).error(function(e) {
         alert('The Foursquare API Could Not be Loaded');
     });
@@ -22,7 +24,7 @@ function loadData() {
         success: function(response) {
             var phone = response.venue[0].contact.formattedPhone;
             var address = response.venue[0].location.formattedAddress;
-            
+            this.marker.content = "<p>Phone: " + phone + "</p><p>Address: " + address;
             clearTimeout(foursquareRequestTimeout);
         }
     });
