@@ -7,29 +7,25 @@
         <link rel="stylesheet" type="text/css" href="css/styles.css">
     </head>
     <body>
-<!--            <div>
-            <h1>One of the many places on my travel list: Rome, Italy</h1>
-            <h2>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h2>
-        </div>-->
         <nav id="drawer" class="dark_blue" id="locationList">
             <h2 class="navbar-brand">Pick a location in Rome</h2>
             <div>
                 <!--drop down of location categories-->
                 <select class="navbar-nav" data-bind="options: optionValues, value: selectedOptionValue"></select>
                 <ul class="nav navbar-nav" data-bind="foreach: filteredLocations">
-                    <!--css:$parent.getClass(title)-->
                     <li data-bind="text: title, click: $parent.setLocation"></li>
                 </ul>
             </div>
         </nav>
         <main class="light_blue">
-            <h3>This is a tour of all the locations from the book and movie, "Angels and Demons" by Dan Brown</h3>
+            <h4>This is a tour of all the Rome locations from the book and movie, "Angels and Demons" by Dan Brown</h4>
             <button id="menu" type="button" >
                 <span class="glyphicon glyphicon-menu-hamburger"></span>
             </button>
             <p>Click off the menu screen to close the window.</p>
             <div id="map"></div>
         </main>
+        
         <!-- Load jQuery Library -->
         <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
         <!-- Load Bootstrap Framework -->
@@ -41,5 +37,6 @@
         <!--Load Google API asynchronously.-->
         <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBDGH5hL45yTZWsj7ZgpDHy_D4k8JP2ynE&v=3&callback=initMap">
         </script>
+        s
     </body>
 </html>

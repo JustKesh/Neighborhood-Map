@@ -1,13 +1,13 @@
 var locations = [
-        {title: 'Pantheon', location: {lat: 41.898611, lng: 12.476873}, category: 'Roman Temple'},
-        {title: 'Santa Maria del Popolo', location: {lat: 41.911491, lng: 12.476656}, category: 'Church'},
-        {title: 'St. Peter’s Square', location: {lat: 41.902218, lng: 12.456796}, category: 'Plaza'},
-        {title: 'Santa Maria della Vittoria', location: {lat: 41.904701, lng: 12.494369}, category: 'Church'},
-        {title: 'Piazza Navona', location: {lat: 41.899163, lng: 12.473074}, category: 'Piazza'},
-        {title: 'Sant’Agnese in Agone', location: {lat: 41.898844, lng: 12.472552}, category: 'Church'},
-        {title: 'Castel Sant’Angelo', location: {lat:41.903063, lng:12.466276}, category: 'Castle'},
-        {title: 'St. Peter’s Basilica', location: {lat:41.902167, lng:12.453937}, category: 'Church'},
-        {title: 'Sistine Chapel', location: {lat:41.902947, lng:12.454484}, category: 'Church'}
+        {title: 'Pantheon', location: {lat: 41.898611, lng: 12.476873}, category: 'Roman Temple', venueId: '4adcdac6f964a5202f5321e3'},
+        {title: 'Santa Maria del Popolo', location: {lat: 41.911491, lng: 12.476656}, category: 'Church', venueId: '4adcdac6f964a520065321e3'},
+        {title: 'St. Peter’s Square', location: {lat: 41.902218, lng: 12.456796}, category: 'Plaza', venueId: '4adcdac7f964a520735321e3'},
+        {title: 'Santa Maria della Vittoria', location: {lat: 41.904701, lng: 12.494369}, category: 'Church', venueId: '4bcf2112937ca5937491af92'},
+        {title: 'Piazza Navona', location: {lat: 41.899163, lng: 12.473074}, category: 'Plaza', venueId: '4adcdac6f964a520285321e3'},
+        {title: 'Sant’Agnese in Agone', location: {lat: 41.898844, lng: 12.472552}, category: 'Church', venueId: '4dd9140cfa76ad96d14c6838'},
+        {title: 'Castel Sant’Angelo', location: {lat:41.903063, lng:12.466276}, category: 'Castle', venueId: '5379d816498e622ad5d701cb'},
+        {title: 'St. Peter’s Basilica', location: {lat:41.902167, lng:12.453937}, category: 'Church', venueId: '4adcdac6f964a520105321e3'},
+        {title: 'Sistine Chapel', location: {lat:41.902947, lng:12.454484}, category: 'Church', venueId: '4bd6f610637ba593c5f7f870'}
 ];
 
 // Create a map variable
@@ -20,6 +20,7 @@ var Mapping = function(data){
     this.title = data.title;
     this.location = data.location; 
     this.category = data.category;
+    this.venueId = data.venueId;
 };
 
 var ViewModel = function(){
@@ -29,7 +30,7 @@ var ViewModel = function(){
     this.mapList = ko.observableArray([]);
     
     //Create a list of options from the categories in the locations array
-    this.optionValues = ko.observableArray(["All","Church","Roman Temple","Plaza","Piazza","Castle"]);
+    this.optionValues = ko.observableArray(["All","Church","Roman Temple","Plaza","Castle"]);
     //Default selection
     this.selectedOptionValue = ko.observable("All");
     
@@ -62,14 +63,9 @@ var ViewModel = function(){
     
     this.currentLocation = ko.observable( this.mapList()[0] );
     
-//    self.getClass = function(title) {
-//        return this.selected() == title ? "selected" : "";
-//    }
-    
     this.setLocation = function(clickedLocation) {
         self.currentLocation(clickedLocation);
         this.singleLoc = ko.observableArray([clickedLocation]);
-        //this.selected = ko.observable([clickedLocation].title);
         hideMarkers();
         //this doesn't work
         displayMarker(this.singleLoc());
@@ -78,9 +74,6 @@ var ViewModel = function(){
         
         //how to add api info
     };
-    
-    //set css class to selected when link is clicked
-    //this.selectedLocation = ko.observable('selected');
     
     displayMarker(this.mapList());
 };
@@ -105,6 +98,7 @@ var displayMarker = function(locationList){
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
+            content: '',
             id: i
         });
         // Push the marker to our array of markers.
@@ -123,7 +117,7 @@ var displayMarker = function(locationList){
     map.fitBounds(bounds);
     //set zoom for single markers, so you are not on the rooftop of buildings
     var listener = google.maps.event.addListener(map, "idle", function() { 
-        if(markers.length < 3){
+        if(markers.length == 1){
             map.setZoom(18); 
         }
         google.maps.event.removeListener(listener); 
@@ -144,7 +138,7 @@ var populateInfoWindow = function(marker, infowindow){
     // Check to make sure the infowindow is not already opened on this marker.
     if (infowindow.marker != marker) {
         infowindow.marker = marker;
-        infowindow.setContent('<div>' + marker.title + '</div>');
+        infowindow.setContent('<div>' + marker.title + marker.content + '</div>');
         infowindow.open(map, marker);
         
         // Make sure the marker property is cleared if the infowindow is closed.
@@ -166,6 +160,7 @@ menu.addEventListener('click', function(e) {
     drawer.classList.toggle('open');
     e.stopPropagation();
 });
+
 main.addEventListener('click', function() {
     drawer.classList.remove('open');
 });
