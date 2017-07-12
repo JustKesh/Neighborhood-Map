@@ -62,8 +62,6 @@ var ViewModel = function(){
         }
     });
     
-    //this.currentLocation = ko.observable( this.mapList()[0] );
-    
     this.setLocation = function(clickedLocation) {
         google.maps.event.trigger(clickedLocation.marker, 'click');
     };
