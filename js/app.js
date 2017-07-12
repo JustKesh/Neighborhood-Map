@@ -78,8 +78,7 @@ var displayMarker = function(locationList){
     var bounds = new google.maps.LatLngBounds();
     
     // The following group uses the location array to create an array of markers on initialize.
-    for (var i = 0; i < locationList.length; i++) {
-        
+    locationList.forEach(function(i){
         // Get the position from the location array.
         var position = locationList[i].location;
         var title = locationList[i].title;
@@ -113,7 +112,7 @@ var displayMarker = function(locationList){
                 marker.setAnimation(null); marker.setIcon('http://www.google.com/mapfiles/marker.png');
             }, 1400);
         });
-    }
+    });
 
     // Extend the boundaries of the map for each marker and display the marker
     for (var k = 0; k < markers.length; k++) {
