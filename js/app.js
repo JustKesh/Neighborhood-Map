@@ -75,7 +75,7 @@ var ViewModel = function(){
         //how to add api info
     };
     
-    displayMarker(this.mapList());
+    //displayMarker(this.mapList());
 };
 
 var displayMarker = function(locationList){
@@ -88,17 +88,23 @@ var displayMarker = function(locationList){
     var infowindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
     
+    console.log(locationList.length);
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < locationList.length; i++) {
+        
         // Get the position from the location array.
         var position = locationList[i].location;
         var title = locationList[i].title;
+        var foursquareURL = "https://api.foursquare.com/v2/venues/"+locationList[i].venueId+"?client_id=T1QVIC1GRVHZ525PUZYKZ2RB1SSWORWCJCNK1SZGVJUU0CPL&client_secret=1UYCVHAV41MZBDKWU1IY5G4R3DXAHGJ2BAGFAALPMAFF5FC4&v=20161016";
+        
+        var contactInfo = handleFoursquare(foursquareURL); 
+        
         // Create a marker per location, and put into markers array.
         var marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
-            content: '',
+            content: contactInfo,
             id: i
         });
         // Push the marker to our array of markers.
@@ -147,6 +153,39 @@ var populateInfoWindow = function(marker, infowindow){
         });
     }
 };
+
+var getFoursquareInfo = function(url, callback) {    
+    $.ajax({
+        url: url,
+        dataType: "json",
+        success: function(data) {
+            callback(data);
+            clearTimeout(foursquareRequestTimeout);
+        },
+        error: function(e) {
+            alert("Foursquare API was not successful");
+        }
+    });
+};
+
+var handleFoursquare = function(url){
+    getFoursquareInfo(url, function(data){
+        console.log(data);
+        if (data.response.venue.contact.formattedPhone){
+            var phone = data.response.venue.contact.formattedPhone;
+        }
+        else {
+            var phone = "There is no phone number listed."
+            }
+        var address = data.response.venue.location.formattedAddress;
+        var info = "<p>Phone: " + phone + "</p><p>Address: " + address + "</p>";
+        return info;
+    });  
+};
+
+var foursquareRequestTimeout = setTimeout(function() {
+    alert('failed to get Foursquare resources');
+}, 8000);
 
 var initMap = function(){        
     ko.applyBindings(new ViewModel());
