@@ -80,23 +80,22 @@ var displayMarker = function(locationList){
     // The following group uses the location array to create an array of markers on initialize.
     locationList.forEach(function(i){
         // Get the position from the location array.
-        var position = locationList[i].location;
-        var title = locationList[i].title;
-        var foursquareURL = "https://api.foursquare.com/v2/venues/"+locationList[i].venueId+"?client_id=T1QVIC1GRVHZ525PUZYKZ2RB1SSWORWCJCNK1SZGVJUU0CPL&client_secret=1UYCVHAV41MZBDKWU1IY5G4R3DXAHGJ2BAGFAALPMAFF5FC4&v=20161016";
+        var position = i.location;
+        var title = i.title;
+        var foursquareURL = "https://api.foursquare.com/v2/venues/"+i.venueId+"?client_id=T1QVIC1GRVHZ525PUZYKZ2RB1SSWORWCJCNK1SZGVJUU0CPL&client_secret=1UYCVHAV41MZBDKWU1IY5G4R3DXAHGJ2BAGFAALPMAFF5FC4&v=20161016";
         
         // Create a marker per location, and put into markers array.
         var marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
-            id: i
         });
         
         //add Foursquare details to the marker
         handleFoursquare(foursquareURL, marker); 
         
         // Push the marker to our array of markers.
-        locationList[i].marker = marker;
+        i.marker = marker;
         markers.push(marker);
         
         // Create an onclick event to open the large infowindow at each marker.
