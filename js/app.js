@@ -21,6 +21,7 @@ var Mapping = function(data){
     this.location = data.location; 
     this.category = data.category;
     this.venueId = data.venueId;
+    this.marker = data.marker;
 };
 
 var ViewModel = function(){
@@ -45,7 +46,7 @@ var ViewModel = function(){
         var category = self.selectedOptionValue();
         if (category === "All"){
             hideMarkers();
-            displayMarker(self.mapList());
+            showMarkers(self.mapList());
             return self.mapList();
         }
         else {
@@ -56,26 +57,16 @@ var ViewModel = function(){
                 return location.category === category;
             });
             //only display the filtered list
-            displayMarker(filterList);
+            showMarkers(filterList);
             return filterList;
         }
     });
     
-    this.currentLocation = ko.observable( this.mapList()[0] );
+    //this.currentLocation = ko.observable( this.mapList()[0] );
     
     this.setLocation = function(clickedLocation) {
-        self.currentLocation(clickedLocation);
-        this.singleLoc = ko.observableArray([clickedLocation]);
-        hideMarkers();
-        //this doesn't work
-        displayMarker(this.singleLoc());
-        
-        //how to change the appearance of the marker 
-        
-        //how to add api info
+        google.maps.event.trigger(clickedLocation.marker, 'click');
     };
-    
-    //displayMarker(this.mapList());
 };
 
 var displayMarker = function(locationList){
@@ -88,7 +79,6 @@ var displayMarker = function(locationList){
     var infowindow = new google.maps.InfoWindow();
     var bounds = new google.maps.LatLngBounds();
     
-    console.log(locationList.length);
     // The following group uses the location array to create an array of markers on initialize.
     for (var i = 0; i < locationList.length; i++) {
         
@@ -97,21 +87,34 @@ var displayMarker = function(locationList){
         var title = locationList[i].title;
         var foursquareURL = "https://api.foursquare.com/v2/venues/"+locationList[i].venueId+"?client_id=T1QVIC1GRVHZ525PUZYKZ2RB1SSWORWCJCNK1SZGVJUU0CPL&client_secret=1UYCVHAV41MZBDKWU1IY5G4R3DXAHGJ2BAGFAALPMAFF5FC4&v=20161016";
         
-        var contactInfo = handleFoursquare(foursquareURL); 
-        
         // Create a marker per location, and put into markers array.
         var marker = new google.maps.Marker({
             position: position,
             title: title,
             animation: google.maps.Animation.DROP,
-            content: contactInfo,
             id: i
         });
+        
+        //add Foursquare details to the marker
+        handleFoursquare(foursquareURL, marker); 
+        
         // Push the marker to our array of markers.
+        locationList[i].marker = marker;
         markers.push(marker);
         // Create an onclick event to open the large infowindow at each marker.
         marker.addListener('click', function() {
+            var marker = this;
             populateInfoWindow(this, infowindow);
+            //change the marker color when clicked
+            marker.setIcon('http://maps.google.com/mapfiles/ms/icons/blue-dot.png');
+            //animate the markers on click
+            marker.setAnimation(google.maps.Animation.BOUNCE);
+            setTimeout(function()
+                       { 
+                marker.setAnimation(null);
+                marker.setIcon('http://www.google.com/mapfiles/marker.png');
+            }
+                       , 1400);
         });
     }
 
@@ -121,6 +124,7 @@ var displayMarker = function(locationList){
         bounds.extend(markers[i].position);
     }
     map.fitBounds(bounds);
+    
     //set zoom for single markers, so you are not on the rooftop of buildings
     var listener = google.maps.event.addListener(map, "idle", function() { 
         if(markers.length == 1){
@@ -130,13 +134,18 @@ var displayMarker = function(locationList){
     });
 };
 
+var showMarkers = function(newMarkers){
+    //show only the markers from the filtered lists
+    for (var i = 0; i < newMarkers.length; i++) {
+        newMarkers[i].marker.setMap(map);
+    }
+};
+
 var hideMarkers = function(){
     //hide all the markers on the map
     for (var i = 0; i < markers.length; i++) {
         markers[i].setMap(null);
     }
-    //empty markers
-    markers = [];
 };
 
 // "starter code" from 06_StaticMap in Udacity and Google's Maps API Course
@@ -154,13 +163,22 @@ var populateInfoWindow = function(marker, infowindow){
     }
 };
 
-var getFoursquareInfo = function(url, callback) {    
+//call Foursquare API json url
+var handleFoursquare = function(url, marker){
     $.ajax({
         url: url,
         dataType: "json",
         success: function(data) {
-            callback(data);
             clearTimeout(foursquareRequestTimeout);
+            if (data.response.venue.contact.formattedPhone){
+                var phone = data.response.venue.contact.formattedPhone;
+            }
+            else {
+                var phone = "There is no phone number listed."
+                }
+            var address = data.response.venue.location.formattedAddress;
+            var info = "<h6>Courtesy of Foursquare:</h6><p>Phone: " + phone + "</p><p>Address: " + address + "</p>";
+            marker.content = info;
         },
         error: function(e) {
             alert("Foursquare API was not successful");
@@ -168,26 +186,16 @@ var getFoursquareInfo = function(url, callback) {
     });
 };
 
-var handleFoursquare = function(url){
-    getFoursquareInfo(url, function(data){
-        console.log(data);
-        if (data.response.venue.contact.formattedPhone){
-            var phone = data.response.venue.contact.formattedPhone;
-        }
-        else {
-            var phone = "There is no phone number listed."
-            }
-        var address = data.response.venue.location.formattedAddress;
-        var info = "<p>Phone: " + phone + "</p><p>Address: " + address + "</p>";
-        return info;
-    });  
-};
-
 var foursquareRequestTimeout = setTimeout(function() {
     alert('failed to get Foursquare resources');
 }, 8000);
 
-var initMap = function(){        
+var googleApiError = function(){
+    alert("The Google API Map was not able to load");
+};
+
+var initMap = function(){ 
+    displayMarker(locations);
     ko.applyBindings(new ViewModel());
 };
 
