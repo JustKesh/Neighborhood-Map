@@ -99,6 +99,7 @@ var displayMarker = function(locationList){
         // Push the marker to our array of markers.
         locationList[i].marker = marker;
         markers.push(marker);
+        
         // Create an onclick event to open the large infowindow at each marker.
         marker.addListener('click', function() {
             var marker = this;
@@ -109,17 +110,15 @@ var displayMarker = function(locationList){
             marker.setAnimation(google.maps.Animation.BOUNCE);
             setTimeout(function()
                        { 
-                marker.setAnimation(null);
-                marker.setIcon('http://www.google.com/mapfiles/marker.png');
-            }
-                       , 1400);
+                marker.setAnimation(null); marker.setIcon('http://www.google.com/mapfiles/marker.png');
+            }, 1400);
         });
     }
 
     // Extend the boundaries of the map for each marker and display the marker
-    for (var i = 0; i < markers.length; i++) {
-        markers[i].setMap(map);
-        bounds.extend(markers[i].position);
+    for (var k = 0; k < markers.length; k++) {
+        markers[k].setMap(map);
+        bounds.extend(markers[k].position);
     }
     map.fitBounds(bounds);
     
@@ -163,19 +162,20 @@ var populateInfoWindow = function(marker, infowindow){
 
 //call Foursquare API json url
 var handleFoursquare = function(url, marker){
+    var phone, address, info;
     $.ajax({
         url: url,
         dataType: "json",
         success: function(data) {
             clearTimeout(foursquareRequestTimeout);
             if (data.response.venue.contact.formattedPhone){
-                var phone = data.response.venue.contact.formattedPhone;
+                phone = data.response.venue.contact.formattedPhone;
             }
             else {
-                var phone = "There is no phone number listed."
-                }
+                phone = "There is no phone number listed.";
+            }
             var address = data.response.venue.location.formattedAddress;
-            var info = "<h6>Courtesy of Foursquare:</h6><p>Phone: " + phone + "</p><p>Address: " + address + "</p>";
+            info = "<h6>Courtesy of Foursquare:</h6><p>Phone: " + phone + "</p><p>Address: " + address + "</p>";
             marker.content = info;
         },
         error: function(e) {
