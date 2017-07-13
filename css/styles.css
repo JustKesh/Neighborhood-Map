@@ -74,17 +74,13 @@ select {
         /* Flex-grow streches the main content to fill all available space. */
         flex-grow: 1;
     }
-    
-    main p, nav p {
-        display: none;
-    }
 }
 
-.dark_blue {
+.dark-blue {
     background-color: #2A457A;
     color: #efefef;
 }
 
-.light_blue {
+.light-blue {
     background-color: #099DD9;
 }

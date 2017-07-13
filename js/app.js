@@ -16,7 +16,7 @@ var map;
 // Create a new blank array for all the listing markers.
 var markers = [];
 
-var Mapping = function(data){
+var modelMapping = function(data){
     this.title = data.title;
     this.location = data.location; 
     this.category = data.category;
@@ -37,7 +37,7 @@ var ViewModel = function(){
     
     //Add each location to the mapList as a new Mapping
     locations.forEach(function(place){
-        self.mapList.push( new Mapping(place) );
+        self.mapList.push( new modelMapping(place) );
     });
     
     //Filter the list displayed based on the categories selected
@@ -165,7 +165,6 @@ var handleFoursquare = function(url, marker){
         url: url,
         dataType: "json",
         success: function(data) {
-            clearTimeout(foursquareRequestTimeout);
             if (data.response.venue.contact.formattedPhone){
                 phone = data.response.venue.contact.formattedPhone;
             }
@@ -181,10 +180,6 @@ var handleFoursquare = function(url, marker){
         }
     });
 };
-
-var foursquareRequestTimeout = setTimeout(function() {
-    alert('failed to get Foursquare resources');
-}, 8000);
 
 var googleApiError = function(){
     alert("The Google API Map was not able to load");

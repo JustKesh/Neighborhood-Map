@@ -3,11 +3,11 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>KClarke Neighborhood Map</title>
-        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/styles.css">
     </head>
     <body>
-        <nav id="drawer" class="dark_blue" id="locationList">
+        <nav id="drawer" class="dark-blue" id="locationList">
             <h2 class="navbar-brand">Pick a location in Rome</h2>
             <div>
                 <!--drop down of location categories-->
@@ -17,7 +17,7 @@
                 </ul>
             </div>
         </nav>
-        <main class="light_blue">
+        <main class="light-blue">
             <h4>This is a tour of all the Rome locations from the book and movie, "Angels and Demons" by Dan Brown</h4>
             <button id="menu" type="button" >
                 <span class="glyphicon glyphicon-menu-hamburger"></span>
@@ -27,13 +27,13 @@
         </main>
         
         <!-- Load jQuery Library -->
-        <script type="text/javascript" src="js/jquery-3.2.1.js"></script>
+        <script src="js/jquery-3.2.1.js"></script>
         <!-- Load Bootstrap Framework -->
-        <script type="text/javascript" src="js/bootstrap.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
         <!-- Load Knockout Framework -->
-        <script type="text/javascript" src="js/knockout.js"></script>
+        <script src="js/knockout.js"></script>
         <!-- Load app.js file -->
-        <script type="text/javascript" src="js/app.js"></script>
+        <script src="js/app.js"></script>
         <!--Load Google API asynchronously.-->
         <script async defer src="https://maps.googleapis.com/maps/api/js?v=3&key=AIzaSyBDGH5hL45yTZWsj7ZgpDHy_D4k8JP2ynE&v=3&callback=initMap" onerror="googleApiError()">
         </script>
